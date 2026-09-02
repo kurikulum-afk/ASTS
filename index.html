@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Ujian SMKN 5 Yogyakarta</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f0f4f8; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; }
+        
+        /* TAMPILAN LOGIN */
+        #loginSection { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
+        .login-card { background: #fff; border-radius: 12px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid #0d47a1; text-align: center; }
+        .header h2 { color: #0d47a1; font-size: 20px; }
+        .header p { color: #64748b; font-size: 13px; margin: 5px 0 20px 0; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px; text-align: left; }
+        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px; text-align: center; letter-spacing: 2px; text-transform: uppercase; }
+        .btn-submit { width: 100%; padding: 12px; background: #0d47a1; color: #fff; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .error-msg { color: #dc2626; font-size: 13px; margin-top: 10px; display: none; }
+
+        /* TAMPILAN MENU SOAL (SEMBUNYI DULU) */
+        #menuSection { display: none; }
+        .menu-header { background: #0d47a1; color: #fff; padding: 20px; border-radius: 10px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card-title { font-size: 16px; font-weight: 700; color: #0d47a1; margin-bottom: 8px; }
+        .card-info { font-size: 13px; color: #64748b; margin-bottom: 15px; line-height: 1.5; }
+        .btn-gform { display: block; text-align: center; background: #2563eb; color: #fff; text-decoration: none; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 13px; }
+        .btn-logout { background: #ef4444; color: #fff; padding: 8px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HALAMAN 1: FORM LOGIN TOKEN -->
+    <div id="loginSection">
+        <div class="login-card">
+            <div class="header">
+                <h2>ASTS SMKN 5 Yogyakarta</h2>
+                <p>Masukkan Token Ujian Sesi Berjalan</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="tokenInput">TOKEN UJIAN</label>
+                    <input type="text" id="tokenInput" placeholder="Contoh: K5-8392" maxlength="10" required>
+                </div>
+                <button type="submit" class="btn-submit">Masuk Ujian</button>
+                <div id="errorMsg" class="error-msg">Token salah atau sudah kadaluwarsa!</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- HALAMAN 2: DAFTAR MENU SOAL UJIAN -->
+    <div id="menuSection">
+        <div class="menu-header">
+            <div>
+                <h1 style="font-size:18px;">Jadwal & Menu Ujian Hari Ini</h1>
+                <p style="font-size: 12px; color: #93c5fd;">SMKN 5 Yogyakarta</p>
+            </div>
+            <button onclick="logout()" class="btn-logout">Keluar</button>
+        </div>
+
+        <div class="grid">
+            <!-- MAPEL 1 -->
+            <div class="card">
+                <div class="card-title">Matematika</div>
+                <div class="card-info">
+                    <strong>Waktu:</strong> 07:30 - 09:00 WIB<br>
+                    <strong>Jumlah Soal:</strong> 30 PG
+                </div>
+                <a href="https://docs.google.com/forms/d/e/PASTE_LINK_GFORM_1/viewform" target="_top" class="btn-gform">Kerjakan Soal</a>
+            </div>
+
+            <!-- MAPEL 2 -->
+            <div class="card">
+                <div class="card-title">Bahasa Indonesia</div>
+                <div class="card-info">
+                    <strong>Waktu:</strong> 09:30 - 11:00 WIB<br>
+                    <strong>Jumlah Soal:</strong> 40 PG
+                </div>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfgWeqbjm29FEXj4qTa9MfXA6BWC0FnC_0LAEvmvGhAvEcnjA/viewform?usp=header" target="_top" class="btn-gform">Kerjakan Soal</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function generateComplexToken() {
+        const SECRET_KEY = 5791;
+        const now = new Date();
+        const tanggal = now.getDate();
+        const bulan = now.getMonth() + 1;
+        const jam = now.getHours();
+        
+        const seed = (tanggal * 10000) + (bulan * 100) + jam + SECRET_KEY;
+        const hashCode = Math.floor(Math.abs(Math.sin(seed) * 10000));
+        return "K5-" + String(hashCode).padStart(4, '0');
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const inputVal = document.getElementById('tokenInput').value.trim().toUpperCase();
+        const validToken = generateComplexToken();
+
+        if (inputVal === validToken) {
+            // Sembunyikan bagian login, tampilkan bagian menu
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('menuSection').style.display = 'block';
+        } else {
+            document.getElementById('errorMsg').style.display = 'block';
+        }
+    });
+
+    function logout() {
+        document.getElementById('tokenInput').value = '';
+        document.getElementById('errorMsg').style.display = 'none';
+        document.getElementById('menuSection').style.display = 'none';
+        document.getElementById('loginSection').style.display = 'flex';
+    }
+</script>
+
+</body>
+</html>
