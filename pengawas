@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panel Pengawas Ujian - SMKN 5 Yogyakarta</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html, body { width: 100%; height: 100%; overflow: hidden; position: fixed; background-color: #f0f4f8; }
+        .wrapper { display: flex; justify-content: center; align-items: center; width: 100vw; height: 100vh; padding: 15px; }
+        .container { width: 100%; max-width: 480px; }
+        .card { background: #ffffff; border-radius: 12px; padding: 25px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-top: 5px solid #0d47a1; text-align: center; }
+        .header h2 { color: #0d47a1; font-size: 18px; margin-bottom: 4px; }
+        .header p { color: #64748b; font-size: 12px; margin-bottom: 18px; }
+        
+        .token-display { background: #eff6ff; border: 2px dashed #2563eb; border-radius: 8px; padding: 15px; margin: 15px 0; }
+        .token-label { font-size: 11px; font-weight: 700; color: #1e40af; text-transform: uppercase; letter-spacing: 1px; }
+        .token-value { font-size: 28px; font-weight: 800; color: #1e3a8a; letter-spacing: 3px; margin: 5px 0; }
+        .token-info { font-size: 11px; color: #64748b; }
+        
+        .btn-refresh { width: 100%; padding: 10px; background: #0d47a1; color: #ffffff; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 5px; }
+        .btn-refresh:hover { background: #1565c0; }
+        
+        .nav-link { display: inline-block; margin-top: 15px; font-size: 12px; color: #64748b; text-decoration: none; }
+        .nav-link:hover { color: #0d47a1; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h2>Panel Pengawas Ujian</h2>
+                <p>Pantau Token Ujian Real-Time</p>
+            </div>
+
+            <div class="token-display">
+                <div class="token-label">Token Sesi Jam Ini</div>
+                <div id="tokenText" class="token-value">GENERATING...</div>
+                <div class="token-info">Token otomatis berganti setiap pergantian jam</div>
+            </div>
+
+            <button onclick="updateToken()" class="btn-refresh">Cek / Refresh Token</button>
+
+            <div>
+                <a href="index.html" class="nav-link">← Kembali ke Halaman Siswa</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function generateComplexToken() {
+        const SECRET_KEY = 5791;
+        const now = new Date();
+        const tanggal = now.getDate();
+        const bulan = now.getMonth() + 1;
+        const jam = now.getHours();
+        
+        const seed = (tanggal * 10000) + (bulan * 100) + jam + SECRET_KEY;
+        const hashCode = Math.floor(Math.abs(Math.sin(seed) * 10000));
+        return "K5-" + String(hashCode).padStart(4, '0');
+    }
+
+    function updateToken() {
+        document.getElementById('tokenText').innerText = generateComplexToken();
+    }
+
+    // Jalankan otomatis saat halaman dibuka
+    updateToken();
+</script>
+
+</body>
+</html>
